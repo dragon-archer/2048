@@ -1,0 +1,25 @@
+##
+# @file .gitignore
+# @author dragon-archer (dragon-archer@outlook.com)
+# @brief The Git Ignore file
+# @version 0.0.1
+#
+# @license This file is published under The MIT License
+#          See License in the root directory for details
+#          Copyright (c) 2020 dragon-archer
+#
+
+##
+# Ignore CMake build files
+#
+build/
+
+##
+# Ignore CPack files
+#
+pack/
+
+##
+# Ignore Visual Studio Code settings
+#
+.vscode/
