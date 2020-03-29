@@ -16,7 +16,9 @@ project(2048
         LANGUAGES   CXX)
 
 set(SRC
-    src/main.cpp)
+    src/main.cpp
+    src/utility.cpp
+    src/utility.h)
 set(PCH
     src/pch.h)
 
