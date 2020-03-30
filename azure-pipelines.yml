@@ -1,0 +1,44 @@
+##
+# @file    azure-pipelines.yml
+# @author  dragon-archer (dragon-archer@outlook.com)
+# @brief   The Azure Pipelines configure file
+# @version 0.0.1
+#
+# @license This file is published under The MIT License
+#          See License in the root directory for details
+#          Copyright (c) 2020 dragon-archer
+#
+
+trigger:
+- master
+- develop
+
+jobs:
+- job: Windows
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - script: |
+      mkdir build && cd build
+      cmake .. -G "Visual Studio 16 2019" -A x64
+    displayName: Configure project by CMake
+  - script: |
+      cd build
+      msbuild /p:Configuration=Debug 2048.sln
+    displayName: Build project in Debug mode by MSBuild
+  - script: |
+      cd build
+      msbuild /p:Configuration=Release 2048.sln
+    displayName: Build project in Release mode by MSBuild
+- job: Ubuntu
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - script: |
+      mkdir build && cd build
+      cmake ..
+    displayName: Configure project by CMake
+  - script: |
+      cd build
+      make
+    displayName: Build project by GNU Make
