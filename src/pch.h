@@ -26,6 +26,9 @@
     #include <Windows.h>
 #elif defined(linux) || defined(__linux__) /* Linux system */
     #define OS_LINUX
+    #include <sys/types.h>
+    #include <sys/ioctl.h>
+    #include <unistd.h>
 #else /* Unknown OS */
     #error "This program currently not support your operating system.\n" \
            "Please use Windows or Linux instead."
@@ -39,6 +42,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <iterator>
 #include <random>
 
 #endif /* _2048_PCH_H */

@@ -30,7 +30,7 @@ void gotoxy(int x, int y)
 	COORD coord {(SHORT)y, (SHORT)x};
 	::SetConsoleCursorPosition(hStdOut, coord);
 #elif defined(OS_LINUX)
-	cout << "\e[" << x + 1 << ';' << y + 1 << 'H';
+	std::cout << "\e[" << x + 1 << ';' << y + 1 << 'H';
 #endif
 }
 
@@ -43,5 +43,28 @@ void cls()
 	system("cls");
 #elif defined(OS_LINUX)
 	system("clear");
+#endif
+}
+
+/**
+ * @brief Get terminal size
+ * 
+ * @param row The rows of terminal
+ * @param col The columns of terminal
+ */
+void getsize(int& row, int& col)
+{
+#if defined(OS_WINDOWS)
+	// Get from Win32 API
+	HANDLE hStdOut = ::GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	::GetConsoleScreenBufferInfo(hStdOut, &csbi);
+	row = csbi.srWindow.Bottom + 1;
+	col = csbi.srWindow.Right + 1;
+#elif defined(OS_LINUX)
+	winsize wsi;
+	::ioctl(STDOUT_FILENO, TIOCGWINSZ, &wsi);
+	row = wsi.ws_row;
+	col = wsi.ws_col;
 #endif
 }

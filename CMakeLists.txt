@@ -18,7 +18,9 @@ project(2048
 set(SRC
     src/main.cpp
     src/utility.cpp
-    src/utility.h)
+    src/utility.h
+    src/init.cpp
+    src/init.h)
 set(PCH
     src/pch.h)
 

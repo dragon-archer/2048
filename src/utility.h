@@ -31,4 +31,12 @@ void gotoxy(int x, int y);
  */
 void cls();
 
+/**
+ * @brief Get terminal size
+ * 
+ * @param row The rows of terminal
+ * @param col The columns of terminal
+ */
+void getsize(int& row, int& col);
+
 #endif /* _2048_UTILITY_H */
