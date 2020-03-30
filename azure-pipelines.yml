@@ -23,12 +23,10 @@ jobs:
       cmake .. -G "Visual Studio 16 2019" -A x64
     displayName: Configure project by CMake
   - script: |
-      cd build
-      msbuild /p:Configuration=Debug 2048.sln
+      cmake --build build --config Debug
     displayName: Build project in Debug mode by MSBuild
   - script: |
-      cd build
-      msbuild /p:Configuration=Release 2048.sln
+      cmake --build build --config Release
     displayName: Build project in Release mode by MSBuild
 - job: Ubuntu
   pool:
