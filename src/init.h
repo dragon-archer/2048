@@ -1,7 +1,7 @@
 /**
- * @file    src/main.cpp
+ * @file    src/init.h
  * @author  dragon-archer (dragon-archer@outlook.com)
- * @brief   The entry point of the program
+ * @brief   Init global settings
  * @version 0.0.1
  * 
  * @license This file is published under The MIT License
@@ -9,20 +9,19 @@
  *          Copyright (c) 2020 dragon-archer
  */
 
+#ifndef _2048_INIT_H
+#define _2048_INIT_H 1
+
+#ifdef _MSC_VER /* MSVC compatiblilty */
+#pragma once
+#endif /* _MSC_VER */
+
 #include <pch.h>
 #include <utility.h>
-#include <init.h>
 
 /**
- * @brief The entry point of the program
- * 
- * @param argc 
- * @param argv 
- * @return int 
+ * @brief  Init global settings
  */
-int main(int argc, char* argv[])
-{
-    init();
-    std::cin.get();
-    return 0;
-}
+void init();
+
+#endif /* _2048_INIT_H */
