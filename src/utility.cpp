@@ -33,3 +33,15 @@ void gotoxy(int x, int y)
 	cout << "\e[" << x + 1 << ';' << y + 1 << 'H';
 #endif
 }
+
+/**
+ * @brief Clear screen
+ */
+void cls()
+{
+#if defined(OS_WINDOWS)
+	system("cls");
+#elif defined(OS_LINUX)
+	system("clear");
+#endif
+}

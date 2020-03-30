@@ -26,4 +26,9 @@
  */
 void gotoxy(int x, int y);
 
+/**
+ * @brief Clear screen
+ */
+void cls();
+
 #endif /* _2048_UTILITY_H */
