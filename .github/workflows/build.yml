@@ -1,0 +1,56 @@
+##
+# @file    .github/workflows/build.yml
+# @author  dragon-archer (dragon-archer@outlook.com)
+# @brief   The GitHub Actions configure file
+# @version 0.0.1
+#
+# @license This file is published under The MIT License
+#          See License in the root directory for details
+#          Copyright (c) 2020 dragon-archer
+#
+
+name: CI Build
+
+on:
+  push:
+    branches:
+    - master
+    - develop
+  pull_request:
+    braches:
+    - master
+    - develop
+
+jobs:
+  Windows:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure project by CMake
+      run: |
+        mkdir build && cd build
+        cmake .. -G "Visual Studio 16 2019" -A x64
+    - name: Build project in Debug mode by MSBuild
+      run: |
+        cmake --build build --config Debug
+    - name: Build project in Release mode by MSBuild
+      run: |
+        cmake --build build --config Release
+  Ubuntu:
+    name: Build on Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure project by CMake
+      run: |
+        mkdir build && cd build
+        cmake ..
+    - name: Build project in Debug mode by GNU Make
+      run: |
+        cmake --build build --config Debug
+    - name: Build project in Release mode by GNU Make
+      run: |
+        cmake --build build --config Release

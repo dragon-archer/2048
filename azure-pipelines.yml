@@ -37,6 +37,8 @@ jobs:
       cmake ..
     displayName: Configure project by CMake
   - script: |
-      cd build
-      make
-    displayName: Build project by GNU Make
+      cmake --build build --config Debug
+    displayName: Build project in Debug mode by GNU Make
+  - script: |
+      cmake --build build --config Release
+    displayName: Build project in Release mode by GNU Make
