@@ -30,7 +30,7 @@ pool:
 steps:
 - script: |
     mkdir build && cd build
-    cmake .. -G $(generator) $(extra)
+    cmake .. -G "$(generator)" $(extra)
   displayName: Configure project by CMake
 - script: |
     cmake --build build --config Debug
