@@ -19,10 +19,12 @@ strategy:
       imageName: 'ubuntu-latest'
       generator: 'Unix Makefiles'
       extra: ' '
+      sudo: 'sudo'
     windows:
       imageName: 'windows-latest'
       generator: 'Visual Studio 16 2019'
       extra: '-A x64'
+      sudo: ' '
 
 pool:
   vmImage: $(imageName)
@@ -39,7 +41,7 @@ steps:
     cmake --build build --config Release
   displayName: Build project in Release mode
 - script: |
-    cmake --install build --config Release
+    $(sudo) cmake --install build --config Release
   displayName: Install project in Release mode
 - script: |
     cpack -G TGZ -C Release --config build/CPackConfig.cmake 
