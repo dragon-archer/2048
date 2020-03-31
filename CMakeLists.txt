@@ -31,3 +31,19 @@ target_precompile_headers(2048 PRIVATE ${PCH})
 target_compile_options(2048 PRIVATE
                        $<$<CXX_COMPILER_ID:GNU,Clang>:-std=c++11>
                        $<$<CXX_COMPILER_ID:MSVC>:/std:c++14>)     # NOTE: Because MSVC do not support /std:c++11, so set it to C++14
+
+install(TARGETS 2048 DESTINATION bin)
+
+include(InstallRequiredSystemLibraries)
+set(CPACK_PACKAGE_DIRECTORY ${PROJECT_SOURCE_DIR}/pack)
+set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/License)
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_SOURCE_IGNORE_FILES
+        ${PROJECT_SOURCE_DIR}/.git
+        ${PROJECT_SOURCE_DIR}/.gitignore
+        ${PROJECT_SOURCE_DIR}/.vscode
+        ${PROJECT_SOURCE_DIR}/build
+        ${PROJECT_SOURCE_DIR}/pack)
+set(CPACK_PACKAGE_FILE_NAME ${PROJECT_NAME}-${PROJECT_VERSION})
+set(CPACK_SOURCE_PACKAGE_FILE_NAME ${PROJECT_NAME}-${2048_VERSION}-src)
+include(CPack)
