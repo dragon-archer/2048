@@ -21,25 +21,24 @@ on:
     - master
     - develop
 
-strategy:
-  matrix:
-    os: [windows-latest, ubuntu-latest]
-    include:
-    - os: windows-latest
-      generator: 'Visual Studio 16 2019'
-      extra: '-A x64'
-      sudo: ' '
-      removeChoco: 'del /F /Q %ChocolateyInstall%\bin\cpack.exe'
-    - os: ubuntu-latest
-      generator: 'Unix Makefiles'
-      extra: ' '
-      sudo: 'sudo'
-      removeChoco: 'true'
-
-runs-on: ${{ matrix.os }}
 
 jobs:
   Build:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        include:
+        - os: windows-latest
+          generator: 'Visual Studio 16 2019'
+          extra: '-A x64'
+          sudo: ' '
+          removeChoco: 'del /F /Q %ChocolateyInstall%\bin\cpack.exe'
+        - os: ubuntu-latest
+          generator: 'Unix Makefiles'
+          extra: ' '
+          sudo: 'sudo'
+          removeChoco: 'true'
+    runs-on: ${{ matrix.os }}
     name: Build on ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
