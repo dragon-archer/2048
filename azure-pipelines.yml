@@ -13,32 +13,37 @@ trigger:
 - master
 - develop
 
-jobs:
-- job: Windows
-  pool:
-    vmImage: 'windows-latest'
-  steps:
-  - script: |
-      mkdir build && cd build
-      cmake .. -G "Visual Studio 16 2019" -A x64
-    displayName: Configure project by CMake
-  - script: |
-      cmake --build build --config Debug
-    displayName: Build project in Debug mode by MSBuild
-  - script: |
-      cmake --build build --config Release
-    displayName: Build project in Release mode by MSBuild
-- job: Ubuntu
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - script: |
-      mkdir build && cd build
-      cmake ..
-    displayName: Configure project by CMake
-  - script: |
-      cmake --build build --config Debug
-    displayName: Build project in Debug mode by GNU Make
-  - script: |
-      cmake --build build --config Release
-    displayName: Build project in Release mode by GNU Make
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-latest'
+      generator: 'Unix Makefiles'
+      extra: ' '
+    windows:
+      imageName: 'windows-latest'
+      generator: 'Visual Studio 16 2019'
+      extra: '-A x64'
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+- script: |
+    mkdir build && cd build
+    cmake .. -G $(generator) $(extra)
+  displayName: Configure project by CMake
+- script: |
+    cmake --build build --config Debug
+  displayName: Build project in Debug mode
+- script: |
+    cmake --build build --config Release
+  displayName: Build project in Release mode
+- script: |
+    cmake --install build --config Release
+  displayName: Install project in Release mode
+- script: |
+    cpack -G TGZ -C Release --config build/CPackConfig.cmake 
+  displayName: Pack binaries in Release mode by CPack
+- script: |
+    cpack -G TGZ --config build/CPackSourceConfig.cmake 
+  displayName: Pack source by CPack
