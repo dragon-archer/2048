@@ -20,11 +20,13 @@ strategy:
       generator: 'Unix Makefiles'
       extra: ' '
       sudo: 'sudo'
+      removeChoco: ' '
     windows:
       imageName: 'windows-latest'
       generator: 'Visual Studio 16 2019'
       extra: '-A x64'
       sudo: ' '
+      removeChoco: 'del /F /Q %ChocolateyInstal%\bin\cpack.exe'
 
 pool:
   vmImage: $(imageName)
@@ -44,7 +46,7 @@ steps:
     $(sudo) cmake --install build --config Release
   displayName: Install project in Release mode
 - script: |
-    cpack -G TGZ -C Release --config build/CPackConfig.cmake 
+    $(sudo) cpack -G TGZ -C Release --config build/CPackConfig.cmake 
   displayName: Pack binaries in Release mode by CPack
 - script: |
     cpack -G TGZ --config build/CPackSourceConfig.cmake 
