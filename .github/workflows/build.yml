@@ -21,36 +21,44 @@ on:
     - master
     - develop
 
+strategy:
+  matrix:
+    os: [windows-latest, ubuntu-latest]
+    include:
+    - os: windows-latest
+      generator: 'Visual Studio 16 2019'
+      extra: '-A x64'
+      sudo: ' '
+      removeChoco: 'del /F /Q %ChocolateyInstall%\bin\cpack.exe'
+    - os: ubuntu-latest
+      generator: 'Unix Makefiles'
+      extra: ' '
+      sudo: 'sudo'
+      removeChoco: 'true'
+
+runs-on: ${{ matrix.os }}
+
 jobs:
-  Windows:
-    name: Build on Windows
-    runs-on: windows-latest
-
+  Build:
+    name: Build on ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - name: Configure project by CMake
       run: |
         mkdir build && cd build
-        cmake .. -G "Visual Studio 16 2019" -A x64
-    - name: Build project in Debug mode by MSBuild
+        cmake .. -G "${{ matrix.generator }}" ${{ matrix.extra }}
+    - name: Build project in Debug mode
       run: |
         cmake --build build --config Debug
-    - name: Build project in Release mode by MSBuild
+    - name: Build project in Release mode
       run: |
         cmake --build build --config Release
-  Ubuntu:
-    name: Build on Ubuntu
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Configure project by CMake
+    - name: Install the project in Release mode
       run: |
-        mkdir build && cd build
-        cmake ..
-    - name: Build project in Debug mode by GNU Make
+        ${{ matrix.sudo }} cmake --install build --config Release
+    - name: Pack binaries in Release mode by CPack
       run: |
-        cmake --build build --config Debug
-    - name: Build project in Release mode by GNU Make
+        ${{ matrix.removeChoco }} && ${{ matrix.sudo }} cpack -G TGZ -C Release --config build/CPackConfig.cmake
+    - name: Pack source by CPack
       run: |
-        cmake --build build --config Release
+        ${{ matrix.sudo }} cpack -G TGZ --config build/CPackSourceConfig.cmake 
