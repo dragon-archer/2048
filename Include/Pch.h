@@ -12,5 +12,6 @@
 
 #include <fstream>
 #include <random>
+#include <algorithm>
 
 #endif /* _PCH_H */

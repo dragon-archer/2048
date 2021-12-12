@@ -1,4 +1,5 @@
 .vscode/
 Build/
+Temp/
 *.user
 *.user.*

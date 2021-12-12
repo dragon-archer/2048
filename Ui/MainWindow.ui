@@ -24,15 +24,25 @@
      <rect>
       <x>70</x>
       <y>60</y>
-      <width>401</width>
-      <height>401</height>
+      <width>405</width>
+      <height>405</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Cascadia Code</family>
+      <pointsize>30</pointsize>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
     </property>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
+    </property>
+    <property name="midLineWidth">
+     <number>2</number>
     </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -106,7 +116,7 @@
      </rect>
     </property>
     <property name="text">
-     <string></string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="LabelBestScore">
@@ -119,7 +129,7 @@
      </rect>
     </property>
     <property name="text">
-     <string></string>
+     <string/>
     </property>
    </widget>
   </widget>
@@ -129,7 +139,7 @@
      <x>0</x>
      <y>0</y>
      <width>540</width>
-     <height>27</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="MenuFile">

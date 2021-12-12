@@ -14,14 +14,14 @@ MainWindow::MainWindow(QWidget *parent)
 	score = 0;
 	bestScore = ReadBestScore();
 	ui->LabelScore->setText("0");
-	ui->LabelBestScore->setText(QString(std::to_string(bestScore).c_str()));
+	ui->LabelBestScore->setText(QString::number(bestScore));
 	ui->TableData->setSelectionMode(QAbstractItemView::NoSelection);
 	ui->TableData->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-	// QTableWidgetItem* p;
+	// ui->TableData->gridStyle();
+	// ui->TableData->setStyleSheet("QTableWidget::item{border:2px solid;}");
+	// ui->TableData->setItemPrototype()
 	QFont qf;
 	qf.setPointSize(20);
-	// qDebug() << qf.family() << Qt::endl;
 	for(int i = 0; i < 4; ++i) {
 		for(int j = 0; j < 4; ++j) {
 			auto p = new QTableWidgetItem;
@@ -32,20 +32,28 @@ MainWindow::MainWindow(QWidget *parent)
 			table[i][j] = 0;
 		}
 	}
-
 	color[0] = {238, 228, 218, 90};
 	color[1] = {238, 228, 218};
 	color[2] = {237, 224, 200};
 	color[3] = {242, 177, 121};
 	color[4] = {245, 149, 99};
 	color[5] = {246, 124, 95};
+	color[6] = {246, 94, 59};
+	color[7] = {237, 207, 114};
+	color[8] = {237, 204, 97};
 
-	table[0][1] = 2;
-	table[0][2] = 1;
-	table[1][1] = 3;
-	table[1][3] = 4;
-	table[2][3] = 5;
+	// table[0][1] = 2;
+	// table[0][2] = 1;
+	// table[1][1] = 3;
+	// table[1][3] = 4;
+	// table[2][3] = 5;
+	// table[3][1] = 6;
+	// table[3][2] = 7;
+	// table[3][3] = 8;
+	generate();
+	generate();
 	print();
+	// qDebug() << ui->TableData->styleSheet();
 }
 
 MainWindow::~MainWindow()
@@ -60,40 +68,42 @@ void MainWindow::print()
 		for(int j = 0; j < 4; ++j) {
 			p = ui->TableData->item(i, j);
 			if(table[i][j] != 0) {
-				p->setText(std::to_string(size_t(std::pow(2, table[i][j]))).c_str());
+				p->setText(QString::number(size_t(std::pow(2, table[i][j]))));
+			} else {
+				p->setText("");
 			}
 			p->setBackground(QBrush(color[table[i][j]]));
+			if(table[i][j] > 2) {
+				p->setForeground(QBrush({249, 246, 242}));
+			} else if(table[i][j] > 0) {
+				p->setForeground(QBrush({119, 110, 101}));
+			} else {
+				p->setForeground(QBrush({205, 193, 180}));
+			}
 		}
 	}
+	ui->LabelScore->setText(QString::number(score));
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event)
 {
 	bool result = false;
-	// qDebug() << event->text();
 	switch(event->key()) {
-		// case Qt::Key_Space:
-		// 	qDebug() << "Space" << Qt::endl;
-		// 	break;
 		case Qt::Key_Up:
 		case Qt::Key_W:
 			result = moveUp();
-			qDebug() << "Up" << Qt::endl;
 			break;
 		case Qt::Key_S:
 		case Qt::Key_Down:
-			// result = moveDown();
-			qDebug() << "Down" << Qt::endl;
+			result = moveDown();
 			break;
 		case Qt::Key_A:
 		case Qt::Key_Left:
-			// result = moveLeft();
-			qDebug() << "Left" << Qt::endl;
+			result = moveLeft();
 			break;
 		case Qt::Key_D:
 		case Qt::Key_Right:
-			// result = moveRight();
-			qDebug() << "Right" << Qt::endl;
+			result = moveRight();
 			break;
 		default:
 			QWidget::keyPressEvent(event);
@@ -135,5 +145,106 @@ bool MainWindow::generate() {
 }
 
 bool MainWindow::moveUp() {
-	return true;
+	bool result = false;
+	for(int j = 0; j < 4; ++j) {
+		std::vector<uint8_t> a {table[0][j], table[1][j], table[2][j], table[3][j]};
+        auto e = std::remove(a.begin(), a.end(), 0);
+        for(auto i = a.begin(); i != e && (i + 1) != e; ++i) {
+            if(*i == *(i + 1)) {
+                *i += 1;
+                score += std::pow(2, *i);
+                *(i + 1) = 0;
+                e = std::remove(a.begin(), e, 0);
+            }
+        }
+        for(auto i = e; i != a.end(); ++i) {
+            *i = 0;
+        }
+        for(int i = 0; i < 4; ++i) {
+			if(table[i][j] != a[i]) {
+				result = true;
+			}
+            table[i][j] = a[i];
+        }
+	}
+	return result;
 }
+
+bool MainWindow::moveDown() {
+	bool result = false;
+	for(int j = 0; j < 4; ++j) {
+		std::vector<uint8_t> a {table[3][j], table[2][j], table[1][j], table[0][j]};
+        auto e = std::remove(a.begin(), a.end(), 0);
+        for(auto i = a.begin(); i != e && (i + 1) != e; ++i) {
+            if(*i == *(i + 1)) {
+                *i += 1;
+                score += std::pow(2, *i);
+                *(i + 1) = 0;
+                e = std::remove(a.begin(), e, 0);
+            }
+        }
+        for(auto i = e; i != a.end(); ++i) {
+            *i = 0;
+        }
+        for(int i = 0; i < 4; ++i) {
+			if(table[i][j] != a[3 - i]) {
+				result = true;
+			}
+            table[i][j] = a[3 - i];
+        }
+	}
+	return result;
+}
+
+bool MainWindow::moveLeft() {
+	bool result = false;
+	for(int j = 0; j < 4; ++j) {
+		std::vector<uint8_t> a {table[j][0], table[j][1], table[j][2], table[j][3]};
+        auto e = std::remove(a.begin(), a.end(), 0);
+        for(auto i = a.begin(); i != e && (i + 1) != e; ++i) {
+            if(*i == *(i + 1)) {
+                *i += 1;
+                score += std::pow(2, *i);
+                *(i + 1) = 0;
+                e = std::remove(a.begin(), e, 0);
+            }
+        }
+        for(auto i = e; i != a.end(); ++i) {
+            *i = 0;
+        }
+        for(int i = 0; i < 4; ++i) {
+			if(table[j][i] != a[i]) {
+				result = true;
+			}
+            table[j][i] = a[i];
+        }
+	}
+	return result;
+}
+
+bool MainWindow::moveRight() {
+	bool result = false;
+	for(int j = 0; j < 4; ++j) {
+		std::vector<uint8_t> a {table[j][3], table[j][2], table[j][1], table[j][0]};
+        auto e = std::remove(a.begin(), a.end(), 0);
+        for(auto i = a.begin(); i != e && (i + 1) != e; ++i) {
+            if(*i == *(i + 1)) {
+                *i += 1;
+                score += std::pow(2, *i);
+                *(i + 1) = 0;
+                e = std::remove(a.begin(), e, 0);
+            }
+        }
+        for(auto i = e; i != a.end(); ++i) {
+            *i = 0;
+        }
+        for(int i = 0; i < 4; ++i) {
+			if(table[j][i] != a[3 - i]) {
+				result = true;
+			}
+            table[j][i] = a[3 - i];
+        }
+	}
+	return result;
+}
+

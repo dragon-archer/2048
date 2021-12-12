@@ -19,9 +19,9 @@ public:
 	void keyPressEvent(QKeyEvent* event);
 	void print();
 	bool moveUp();
-	// bool moveDown();
-	// bool moveLeft();
-	// bool moveRight();
+	bool moveDown();
+	bool moveLeft();
+	bool moveRight();
 	bool generate();
 
 private:
