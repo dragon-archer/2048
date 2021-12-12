@@ -146,6 +146,8 @@
     <property name="title">
      <string>Game</string>
     </property>
+    <addaction name="actionSave"/>
+    <addaction name="actionNew"/>
    </widget>
    <widget class="QMenu" name="MenuSettings">
     <property name="title">
@@ -156,6 +158,16 @@
    <addaction name="MenuSettings"/>
   </widget>
   <widget class="QStatusBar" name="StatusBar"/>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

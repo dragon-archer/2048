@@ -11,8 +11,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
+find_package(Qt6 COMPONENTS Widgets LinguistTools REQUIRED)
 
 set(TS_FILES Language/2048_zh_CN.ts)
 
@@ -33,23 +32,14 @@ set(PROJECT_SOURCES
 		${TS_FILES}
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-	qt_add_executable(2048
-		MANUAL_FINALIZATION
-		${PROJECT_SOURCES}
-	)
-	qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-else()
-	add_executable(2048
-		${PROJECT_SOURCES}
-	)
-	qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-endif()
+qt_add_executable(2048
+	MANUAL_FINALIZATION
+	${PROJECT_SOURCES}
+)
+qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 target_include_directories(2048 PUBLIC Include
 								PUBLIC Ui)
-target_link_libraries(2048 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(2048 PRIVATE Qt6::Widgets)
 
-if(QT_VERSION_MAJOR EQUAL 6)
-	qt_finalize_executable(2048)
-endif()
+qt_finalize_executable(2048)

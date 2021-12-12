@@ -8,18 +8,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	this->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
 	this->grabKeyboard();
-	// engine.seed(time(nullptr));
 	ui->setupUi(this);
-	//memset(table, 0, sizeof(table));
 	score = 0;
 	bestScore = ReadBestScore();
 	ui->LabelScore->setText("0");
 	ui->LabelBestScore->setText(QString::number(bestScore));
 	ui->TableData->setSelectionMode(QAbstractItemView::NoSelection);
 	ui->TableData->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	// ui->TableData->gridStyle();
-	// ui->TableData->setStyleSheet("QTableWidget::item{border:2px solid;}");
-	// ui->TableData->setItemPrototype()
 	QFont qf;
 	qf.setPointSize(20);
 	for(int i = 0; i < 4; ++i) {
@@ -32,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 			table[i][j] = 0;
 		}
 	}
+	// Init color table
 	color[0] = {238, 228, 218, 90};
 	color[1] = {238, 228, 218};
 	color[2] = {237, 224, 200};
@@ -41,19 +37,17 @@ MainWindow::MainWindow(QWidget *parent)
 	color[6] = {246, 94, 59};
 	color[7] = {237, 207, 114};
 	color[8] = {237, 204, 97};
+	color[9] = {237, 200, 80};
+	color[10] = {237, 197, 63};
+	color[11] = {237, 194, 46};
+	color[12] = {237, 190, 29};
+	color[13] = Qt::green;
+	color[14] = Qt::cyan;
+	color[15] = Qt::blue;
 
-	// table[0][1] = 2;
-	// table[0][2] = 1;
-	// table[1][1] = 3;
-	// table[1][3] = 4;
-	// table[2][3] = 5;
-	// table[3][1] = 6;
-	// table[3][2] = 7;
-	// table[3][3] = 8;
 	generate();
 	generate();
 	print();
-	// qDebug() << ui->TableData->styleSheet();
 }
 
 MainWindow::~MainWindow()
