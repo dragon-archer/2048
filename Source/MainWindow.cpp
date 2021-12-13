@@ -131,7 +131,7 @@ bool MainWindow::generate() {
 		int i = MainWindow::engine() % 4;
 		int j = MainWindow::engine() % 4;
 		if(table[i][j] == 0) {
-			table[i][j] = MainWindow::engine() % 2 + 1;
+			table[i][j] = (MainWindow::engine() % 10) ? 1 : 2;
 			result = true;
 		}
 	} while(!result);

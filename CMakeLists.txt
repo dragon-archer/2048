@@ -42,4 +42,24 @@ target_include_directories(2048 PUBLIC Include
 								PUBLIC Ui)
 target_link_libraries(2048 PRIVATE Qt6::Widgets)
 
+# Disable console
+if(WIN32)
+	if(MSVC)
+		set_target_properties(${PROJECT_NAME} PROPERTIES
+			WIN32_EXECUTABLE YES
+			LINK_FLAGS "/ENTRY:mainCRTStartup"
+		)
+	elseif(CMAKE_COMPILER_IS_GNUCXX)
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
+	else()
+		message(SEND_ERROR "You are using an unsupported Windows compiler! (Not MSVC or GCC)")
+	endif(MSVC)
+elseif(APPLE)
+	set_target_properties(${PROJECT_NAME} PROPERTIES
+		MACOSX_BUNDLE YES
+	)
+else()
+	message(SEND_ERROR "You are on an unsupported platform! (Not Win32, Mac OS X or Unix)")
+endif(WIN32)
+
 qt_finalize_executable(2048)
