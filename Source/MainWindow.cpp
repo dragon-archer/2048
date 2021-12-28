@@ -1,26 +1,25 @@
 #include <MainWindow.h>
-#include "../Ui/ui_MainWindow.h"
 
 std::mt19937 MainWindow::engine(time(nullptr));
 
 MainWindow::MainWindow(QWidget *parent)
-	: QMainWindow(parent), ui(new Ui::MainWindow)
+	: QMainWindow(parent)
 {
-	this->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-	this->grabKeyboard();
-	ui->setupUi(this);
+	setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+	grabKeyboard();
+	setupUi();
 	score = 0;
-	bestScore = ReadBestScore();
-	ui->LabelScore->setText("0");
-	ui->LabelBestScore->setText(QString::number(bestScore));
-	ui->TableData->setSelectionMode(QAbstractItemView::NoSelection);
-	ui->TableData->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	bestScore = ReadBestScore(dataFileName);
+	LabelScore->setText("0");
+	LabelBestScore->setText(QString::number(bestScore));
+	TableData->setSelectionMode(QAbstractItemView::NoSelection);
+	TableData->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	QFont qf;
 	qf.setPointSize(20);
 	for(int i = 0; i < 4; ++i) {
 		for(int j = 0; j < 4; ++j) {
 			auto p = new QTableWidgetItem;
-			ui->TableData->setItem(i, j, p);
+			TableData->setItem(i, j, p);
 			p->setTextAlignment(Qt::AlignCenter);
 			p->setFont(qf);
 			p->setFlags(Qt::ItemFlag::NoItemFlags);
@@ -52,7 +51,85 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-	delete ui;
+	if(!WriteBestScore(dataFileName, bestScore)) {
+		QMessageBox::critical(this, tr("Error save data"), tr("Cannot save best score"), QMessageBox::Ok, QMessageBox::NoButton);
+	}
+}
+
+void MainWindow::setupUi()
+{
+	if (objectName().isEmpty())
+		setObjectName(QString::fromUtf8("this"));
+	resize(540, 540);
+	QFont font;
+	font.setPointSize(12);
+	setFont(font);
+	CentralWidget = new QWidget(this);
+	CentralWidget->setObjectName(QString::fromUtf8("CentralWidget"));
+	TableData = new QTableWidget(CentralWidget);
+	if (TableData->columnCount() < 4)
+		TableData->setColumnCount(4);
+	if (TableData->rowCount() < 4)
+		TableData->setRowCount(4);
+	TableData->setObjectName(QString::fromUtf8("TableData"));
+	TableData->setGeometry(QRect(70, 60, 405, 405));
+	QFont font1;
+	font1.setFamilies({QString::fromUtf8("Cascadia Code")});
+	font1.setPointSize(30);
+	font1.setBold(true);
+	TableData->setFont(font1);
+	TableData->setFrameShape(QFrame::Box);
+	TableData->setFrameShadow(QFrame::Raised);
+	TableData->setMidLineWidth(2);
+	TableData->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	TableData->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	TableData->setRowCount(4);
+	TableData->setColumnCount(4);
+	TableData->horizontalHeader()->setVisible(false);
+	TableData->horizontalHeader()->setHighlightSections(false);
+	TableData->verticalHeader()->setVisible(false);
+	TableData->verticalHeader()->setDefaultSectionSize(100);
+	TableData->verticalHeader()->setHighlightSections(false);
+	Label1 = new QLabel(CentralWidget);
+	Label1->setObjectName(QString::fromUtf8("Label1"));
+	Label1->setGeometry(QRect(70, 20, 100, 30));
+	Label2 = new QLabel(CentralWidget);
+	Label2->setObjectName(QString::fromUtf8("Label2"));
+	Label2->setGeometry(QRect(270, 20, 100, 30));
+	LabelScore = new QLabel(CentralWidget);
+	LabelScore->setObjectName(QString::fromUtf8("LabelScore"));
+	LabelScore->setGeometry(QRect(170, 20, 100, 30));
+	LabelBestScore = new QLabel(CentralWidget);
+	LabelBestScore->setObjectName(QString::fromUtf8("LabelBestScore"));
+	LabelBestScore->setGeometry(QRect(370, 20, 100, 30));
+	setCentralWidget(CentralWidget);
+	MenuBar = new QMenuBar(this);
+	MenuBar->setObjectName(QString::fromUtf8("MenuBar"));
+	MenuBar->setGeometry(QRect(0, 0, 540, 32));
+	MenuFile = new QMenu(MenuBar);
+	MenuFile->setObjectName(QString::fromUtf8("MenuFile"));
+	MenuSettings = new QMenu(MenuBar);
+	MenuSettings->setObjectName(QString::fromUtf8("MenuSettings"));
+	setMenuBar(MenuBar);
+	StatusBar = new QStatusBar(this);
+	StatusBar->setObjectName(QString::fromUtf8("StatusBar"));
+	setStatusBar(StatusBar);
+
+	MenuBar->addAction(MenuFile->menuAction());
+	MenuBar->addAction(MenuSettings->menuAction());
+
+	retranslateUi();
+}
+
+void MainWindow::retranslateUi()
+{
+	setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
+	Label1->setText(QCoreApplication::translate("MainWindow", "Score:", nullptr));
+	Label2->setText(QCoreApplication::translate("MainWindow", "Best Score:", nullptr));
+	LabelScore->setText(QString());
+	LabelBestScore->setText(QString());
+	MenuFile->setTitle(QCoreApplication::translate("MainWindow", "Game", nullptr));
+	MenuSettings->setTitle(QCoreApplication::translate("MainWindow", "Settings", nullptr));
 }
 
 void MainWindow::print()
@@ -60,7 +137,7 @@ void MainWindow::print()
 	QTableWidgetItem* p;
 	for(int i = 0; i < 4; ++i) {
 		for(int j = 0; j < 4; ++j) {
-			p = ui->TableData->item(i, j);
+			p = TableData->item(i, j);
 			if(table[i][j] != 0) {
 				p->setText(QString::number(size_t(std::pow(2, table[i][j]))));
 			} else {
@@ -76,7 +153,8 @@ void MainWindow::print()
 			}
 		}
 	}
-	ui->LabelScore->setText(QString::number(score));
+	LabelScore->setNum((int)score);
+	LabelBestScore->setNum((int)bestScore);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event)
@@ -104,6 +182,9 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 			break;
 	}
 	if(result) {
+		if(bestScore < score) {
+			bestScore = score;
+		}
 		if(generate()) {
 			print();
 		}

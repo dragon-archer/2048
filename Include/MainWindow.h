@@ -4,10 +4,6 @@
 #include <Pch.h>
 #include <Common.h>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
-
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -24,12 +20,25 @@ public:
 	bool moveRight();
 	bool generate();
 
+	void setupUi();
+	void retranslateUi();
+
 private:
-	Ui::MainWindow *ui;
 	uint8_t table[4][4];
 	size_t score;
 	size_t bestScore;
 	QColor color[16];
 	static std::mt19937 engine;
+
+    QWidget *CentralWidget;
+    QTableWidget *TableData;
+    QLabel *Label1;
+    QLabel *Label2;
+    QLabel *LabelScore;
+    QLabel *LabelBestScore;
+    QMenuBar *MenuBar;
+    QMenu *MenuFile;
+    QMenu *MenuSettings;
+    QStatusBar *StatusBar;
 };
 #endif // MainWindow_H

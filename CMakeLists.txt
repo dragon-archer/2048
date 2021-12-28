@@ -24,8 +24,6 @@ set(PROJECT_SOURCES
 		Include/Pch.h
 		Include/Common.h
 		Include/MainWindow.h
-# User interface
-		Ui/MainWindow.ui
 # Resource files
 		Resource.qrc
 # Translation files
